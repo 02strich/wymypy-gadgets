@@ -1,0 +1,114 @@
+<html>
+<head>
+    <title>WinAmp Control</title>
+    <style>
+        body
+        {
+            margin: 0;
+            width: 134px;
+            height: 50px;
+        }
+        #gadgetMainFrame
+        {
+            width: 100%;
+            top: 2px;
+            
+            font-family: Tahoma;
+            font-size: 12pt;
+            position: absolute;
+	color: #e4e4e4;
+
+        }
+
+
+        #background
+        {
+            width: 134px;
+            height: 50px;
+            position: absolute;
+            z-index: -1;
+            background-repeat: no-repeat;
+        }
+		
+		
+        #walogo_text
+        {
+            cursor:hand;
+        }
+		#walogo
+        {
+            cursor:hand;
+        }
+
+    </style>
+
+
+<script type="text/javascript" src="gadget.js"></script>
+
+
+
+
+</head>
+<body onload="setContentText()" 
+ondragenter="event.returnValue = false"
+ondragover="event.returnValue = false"
+ondrop="GetItemFromDrop()">
+	<g:background 
+        src="bg_main.png" 
+        id="MainBg"   
+        style="position:absolute;width:134px;height:50px;z-index:-1"/>	
+
+<br><br>
+<div id="gadgetMainFrame">
+<div style="height:20px;position:relative;top:0px;left:2px;text-align:center;">
+
+<img id="walogo_text" src="imgs/walogo_text.png" alt="Run Winamp" onclick="runwinamp()"/>&nbsp;<img id="walogo" src="imgs/walogo.png" alt="Run Winamp" onclick="runwinamp()"/>
+</div>
+<div style="position:relative;top:2px;text-align:center;">
+		<IMG
+		 id="button_prev" title="Previous" src="imgs/skins/1/prev.png" 
+		onMouseOver="javascript:ChangeIMG('button_prev','prev_over.png')"
+		onMouseOut="javascript:ChangeIMG('button_prev','prev.png')"
+		onMouseDown="javascript:ChangeIMG('button_prev','prev_down.png')"
+		onMouseUp="javascript:ChangeIMG('button_prev','prev.png')"
+		onClick="javascript:tellwinamp('prev')"
+		/><IMG
+		 id="button_play" title="Play" src="imgs/skins/1/play.png" 
+		onMouseOver="javascript:ChangeIMG('button_play','play_over.png')"
+		onMouseOut="javascript:ChangeIMG('button_play','play.png')"
+		onMouseDown="javascript:ChangeIMG('button_play','play_down.png')"
+		onMouseUp="javascript:ChangeIMG('button_play','play.png')"
+		onClick="javascript:tellwinamp('play')"
+		/><IMG
+		 id="button_pause" title="Pause" src="imgs/skins/1/pause.png" 
+		onMouseOver="javascript:ChangeIMG('button_pause','pause_over.png')"
+		onMouseOut="javascript:ChangeIMG('button_pause','pause.png')"
+		onMouseDown="javascript:ChangeIMG('button_pause','pause_down.png')"
+		onMouseUp="javascript:ChangeIMG('button_pause','pause.png')"
+		onClick="javascript:tellwinamp('pause')"
+		/><IMG
+		 id="button_stop" title="Stop" src="imgs/skins/1/stop.png" 
+		onMouseOver="javascript:ChangeIMG('button_stop','stop_over.png')"
+		onMouseOut="javascript:ChangeIMG('button_stop','stop.png')"
+		onMouseDown="javascript:ChangeIMG('button_stop','stop_down.png')"
+		onMouseUp="javascript:ChangeIMG('button_stop','stop.png')"
+		onClick="javascript:tellwinamp('stop')"
+		/><IMG
+		 id="button_next" title="Next" src="imgs/skins/1/next.png" 
+		onMouseOver="javascript:ChangeIMG('button_next','next_over.png')"
+		onMouseOut="javascript:ChangeIMG('button_next','next.png')"
+		onMouseDown="javascript:ChangeIMG('button_next','next_down.png')"
+		onMouseUp="javascript:ChangeIMG('button_next','next.png')"
+		onClick="javascript:tellwinamp('next')"
+		/>
+</div>	
+		
+
+
+	</div>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,68 @@
+<html>
+<head>
+    <style>
+        body
+        { 
+            width: 250px;
+            height: 225px;
+            font-family: Tahoma;
+            font-size: 10px;
+        }
+        #selskin
+        { 
+            width: 230px;
+            height: 110px;
+            font-family: Tahoma;
+            font-size: 10px;
+            border:1px solid #ccc;
+            background: #fcfcfc;
+        }
+		#winamp_exe
+		{
+			top:2px;
+			position: relative;
+		}
+		#winamp_exe_overlay
+		{
+			top:-20px;
+			position: relative;
+		}
+    </style>
+
+    <script type="text/javascript" src="settings.js"></script>
+    
+</head>
+
+<body onload="loadSettings()">
+<div id="skin">Skin:</div>
+<div id="selskin">
+
+<IMG id="imgSkin" src="imgs/skins/1/drag.png" style="position:relative; left:50px; top:22px"/>
+
+</div>
+<div style="text-align:center; width:100px; position:relative; left:65px; top: 5px;">
+	<IMG id="imgPreviousSkin" title="Previous" src="imgs/buttons/Left.png" style="float:left"
+		onMouseOver="javascript:ChangeIMG_settings('imgPreviousSkin','LeftHover.png')"
+		onMouseOut="javascript:ChangeIMG_settings('imgPreviousSkin','Left.png')"
+		onMouseDown="javascript:ChangeIMG_settings('imgPreviousSkin','LeftDown.png')"
+		onMouseUp="javascript:ChangeIMG_settings('imgPreviousSkin','Left.png')"
+		onClick="previousSkin()"
+	/>
+	
+	<DIV id="divCount" style="text-align:center; width:50px; float:left">(count)</DIV>
+	
+  	<IMG id="imgNextSkin" title="Next" src="imgs/buttons/Right.png" style="float:right" 
+		onMouseOver="javascript:ChangeIMG_settings('imgNextSkin','RightHover.png')"
+		onMouseOut="javascript:ChangeIMG_settings('imgNextSkin','Right.png')"
+		onMouseDown="javascript:ChangeIMG_settings('imgNextSkin','RightDown.png')"
+		onMouseUp="javascript:ChangeIMG_settings('imgNextSkin','Right.png')"
+		onClick="nextSkin()"
+	/>
+</div>
+<br />
+<br />
+Path to winamp.exe:
+    <input type="file" id="winamp_exe" name="winamp_exe" size="10" onchange="change_file()">
+	<input type="text" id="winamp_exe_overlay" name="winamp_exe_overlay" size="10" onchange="change_textoverlay()">
+</body>
+</html>
