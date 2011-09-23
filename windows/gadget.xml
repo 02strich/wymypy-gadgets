@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <gadget>
-    <name>WinAmp Control</name>
-    <namespace>wa.ctrl</namespace>
+    <name>WyMyPy Control</name>
+    <namespace>wymypy.ctrl</namespace>
     <version>1.0.0.0</version>
-    <author name="MD5003">
-    	<info url="http://md5003.redio.de" text="http://md5003.redio.de" />
-        <logo src="logo.png" />
+    <author name="02strich">
+    	<info url="http://02strich.de" text="http://02strich.de" />
+        <logo src="logo.jpeg" />
     </author>
-    <copyright>&#169; 2008</copyright>
-    <description>Control WinAmp with your sidebar</description>
-    	<icons>
+    <copyright>&#169; 2011</copyright>
+    <description>Control WyMyPy from your desktop</description>
+    <icons>
 		<icon src="drag.png"/>
 	</icons>
     <hosts>
         <host name="sidebar">
+			<autoscaleDPI>true</autoscaleDPI>
+			
             <base type="HTML" apiVersion="1.0.0" src="gadget.html" />
             <permissions>Full</permissions>
             <platform minPlatformVersion="1.0" />
