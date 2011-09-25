@@ -7,4 +7,3 @@ Currently planned platforms:
 
 *   Windows
 *   Mac OS X
-*   Cisco IP Phones
