@@ -27,14 +27,56 @@
 	
 	<script type="text/javascript" src="jquery-1.6.4.js"></script>
 	<script type="text/javascript">
-		System.Gadget.settingsUI = "settings.html";
-		System.Gadget.onSettingsClosed = settingsClosed;
-		$.support.cors = true;
+		var refreshInt	= 5;
+		var tickCount	= 0;
 		
-		// react to closing of settings dialog
-		function settingsClosed(event) {
-			if (event.closeAction == event.Action.commit) {
-				// nothing to refresh
+		function updateTick() {
+			tickCount++;
+			if (tickCount >= refreshInt) {
+				//refresh
+				tickCount = 0;
+				updatePage();
+			}
+			setTimeout(function () { updateTick(); }, 1000);
+		}
+		
+		// Initialize the gadget. called from the onload event of primary file
+		function init() {
+			System.Gadget.settingsUI = "settings.html";
+			$.ajaxSetup({ cache: false });
+			$.support.cors = true;
+			
+			updatePage();
+			setTimeout(function () { updateTick(); }, 1000);
+		}
+		
+		function updatePage() {
+			if(shouldDoStuff()) {
+				$.get(getWyMyPyStateURL(), {}, function(data) {
+					if(data.indexOf("pause") == -1) {
+						// currently paused or stopped
+						if($("#button_playpause").attr("src") == "imgs/pause.png")
+							$("#button_playpause").attr("src", "imgs/play.png");
+							
+						$("#button_playpause").click(function()		{ tell_wymypy('play') });
+						$("#button_playpause").mouseover(function()	{ changeIMG('button_playpause','play_over.png') });
+						$("#button_playpause").mouseout(function()	{ changeIMG('button_playpause','play.png') });
+						$("#button_playpause").mouseup(function()	{ changeIMG('button_playpause','play.png') });
+						$("#button_playpause").mousedown(function() { changeIMG('button_playpause','play_down.png') });
+					} else {
+						// currently playing
+						if($("#button_playpause").attr("src") == "imgs/play.png")
+							$("#button_playpause").attr("src", "imgs/pause.png");
+							
+						$("#button_playpause").click(function()		{ tell_wymypy('pause') });
+						$("#button_playpause").mouseover(function()	{ changeIMG('button_playpause','pause_over.png') });
+						$("#button_playpause").mouseout(function()	{ changeIMG('button_playpause','pause.png') });
+						$("#button_playpause").mouseup(function()	{ changeIMG('button_playpause','pause.png') });
+						$("#button_playpause").mousedown(function() { changeIMG('button_playpause','pause_down.png') });
+					}
+				});
+			} else {
+				System.Debug.outputString("not in right network to update");
 			}
 		}
 		
@@ -43,25 +85,53 @@
 			document.getElementById(imagesource).src= "imgs/" + imagename;
 		}
 		
-		// parse gadgets settings
-		function getWyMyPyURL() {
-			var_wymypy_url = System.Gadget.Settings.read("settings_wymypy_url");
-			if(var_wymypy_url == "") {
-				var_wymypy_url = "http://musik.demo.local";
-			}	
-			return var_wymypy_url + "/__ajax/Player/ope";
+		// read setting from gagdet settings cache
+		function readSetting(name, defaultValue) {
+			value = System.Gadget.Settings.read(name);
+			if(value == "")
+				value = defaultValue;
+			return value;
+		}
+		
+		// URL to where to post actions
+		function getWyMyPyActionURL() {
+			return readSetting("settings_wymypy_url", "http://musik.pdm.02strich.de") + "/__ajax/Player/ope";
+		}
+		
+		// URL where to get the current "state"
+		function getWyMyPyStateURL() {
+			return readSetting("settings_wymypy_url", "http://musik.pdm.02strich.de") + "/__ajax/Player/player";
+		}
+		
+		// returns whether the gadget should do anything, currently by looking
+		// if we are on the right network
+		function shouldDoStuff() {
+			try {
+				var configured_domain = readSetting("settings_wymypy_network", "pdm.02strich.de");
+				
+				var objWMIService = GetObject("winmgmts:\\\\.\\root\\CIMV2");
+				var ipInterfaces = new Enumerator(objWMIService.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration Where IPenabled=True"));
+				while(ipInterfaces.atEnd() == false) {
+					if (ipInterfaces.item().DNSDomain == configured_domain)
+						return true;
+					ipInterfaces.moveNext();
+				}
+				return false;
+			} catch (err) {
+				System.Debug.outputString("[WyMyPy Gadget] " + err.message);
+				return false;
+			} 
 		}
 		
 		// do real stuff
 		function tell_wymypy(exec) {
-			System.Debug.outputString(getWyMyPyURL());
-			$.post(
-				getWyMyPyURL(),
-				{p0: exec});
+			if(shouldDoStuff()) {
+				$.post(getWyMyPyActionURL(), {p0: exec}, function(data) { updatePage() });
+			}
 		}
 	</script>
 </head>
-<body ondragenter="event.returnValue = false" ondragover="event.returnValue = false">
+<body ondragenter="event.returnValue = false" ondragover="event.returnValue = false" onload="init()">
 	<g:background src="imgs/bg_main.png" style="position:absolute; width:134px; height:30px; z-index:-1"/>	
 	<br><br>
 	<div id="gadgetMainFrame">
@@ -74,19 +144,7 @@
 				onMouseUp   = "changeIMG('button_prev','prev.png')"
 				onClick = "tell_wymypy('prev')"
 			/><img
-				id="button_play" title="Play" src="imgs/play.png" 
-				onMouseOver = "changeIMG('button_play','play_over.png')"
-				onMouseOut  = "changeIMG('button_play','play.png')"
-				onMouseDown = "changeIMG('button_play','play_down.png')"
-				onMouseUp   = "changeIMG('button_play','play.png')"
-				onClick = "tell_wymypy('play')"
-			/><img
-				id="button_pause" title="Pause" src="imgs/pause.png" 
-				onMouseOver = "changeIMG('button_pause','pause_over.png')"
-				onMouseOut  = "changeIMG('button_pause','pause.png')"
-				onMouseDown = "changeIMG('button_pause','pause_down.png')"
-				onMouseUp   = "changeIMG('button_pause','pause.png')"
-				onClick = "tell_wymypy('pause')"
+				id="button_playpause" title="PlayPause" src="imgs/play.png"
 			/><img
 				id="button_stop" title="Stop" src="imgs/stop.png" 
 				onMouseOver = "changeIMG('button_stop','stop_over.png')"

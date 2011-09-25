@@ -1,11 +1,10 @@
 <html>
 	<head>
 	    <style>
-	        body
-	        {
+	        body {
 				margin: 5px;
 	            width: 280px;
-	            height: 40px;
+	            height: 80px;
 	            font-family: Tahoma;
 	            font-size: 10px;
 	        }
@@ -13,29 +12,44 @@
 	    <script type="text/javascript">
 			System.Gadget.onSettingsClosing = settingsClosing;
 			
+			function readSetting(name, object, defaultValue) {
+				value = System.Gadget.Settings.read(name);
+				if(value == "")
+					value = defaultValue;
+				object.value = value;
+			}
+			
+			function writeSetting(name, object) {
+				value = object.value;
+				if(value == "")
+					return;
+				System.Gadget.Settings.write(name, value);
+			}
+			
 			function loadSettings() {
-				var_wymypy_url = System.Gadget.Settings.read("settings_wymypy_url");
-				if(var_wymypy_url == "") {
-					var_wymypy_url = "http://musik.demo.local";
-				}
-				wymypy_url.value = var_wymypy_url;
+				readSetting("settings_wymypy_url", wymypy_url, "http://musik.demo.local");
+				readSetting("settings_wymypy_network", wymypy_network, "demo.local");
 			}
 
 			function settingsClosing(event) {
 				if (event.closeAction == event.Action.commit) {
-					// Save Settings
-					var_wymypy_url = wymypy_url.value;
-					if(var_wymypy_url == "") {
-						var_wymypy_url = "http://musik.demo.local";
-					}
-					
-					System.Gadget.Settings.write("settings_wymypy_url", var_wymypy_url);
+					writeSetting("settings_wymypy_url", wymypy_url);
+					writeSetting("settings_wymypy_network", wymypy_network);
 				}
 			}
 		</script>
 	</head>
 	
 	<body onload="loadSettings()">
-		WyMyPy URL: <input type="text" id="wymypy_url" name="wymypy_url" size="30" onchange="change_file()">
+		<table>
+			<tr>
+				<td align="right">URL:</td>
+				<td><input type="text" id="wymypy_url" name="wymypy_url" size="30" /></td>
+			</tr>
+			<tr>
+				<td align="right">Network:</td>
+				<td><input type="text" id="wymypy_network" name="wymypy_network" size="30" /></td>
+			</tr>
+		</table>
 	</body>
 </html>
