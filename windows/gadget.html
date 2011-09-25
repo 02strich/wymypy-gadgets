@@ -52,31 +52,36 @@
 		
 		function updatePage() {
 			if(shouldDoStuff()) {
-				$.get(getWyMyPyStateURL(), {}, function(data) {
-					if(data.indexOf("pause") == -1) {
-						// currently paused or stopped
-						if($("#button_playpause").attr("src") == "imgs/pause.png")
-							$("#button_playpause").attr("src", "imgs/play.png");
-							
-						$("#button_playpause").click(function()		{ tell_wymypy('play') });
-						$("#button_playpause").mouseover(function()	{ changeIMG('button_playpause','play_over.png') });
-						$("#button_playpause").mouseout(function()	{ changeIMG('button_playpause','play.png') });
-						$("#button_playpause").mouseup(function()	{ changeIMG('button_playpause','play.png') });
-						$("#button_playpause").mousedown(function() { changeIMG('button_playpause','play_down.png') });
-					} else {
-						// currently playing
-						if($("#button_playpause").attr("src") == "imgs/play.png")
-							$("#button_playpause").attr("src", "imgs/pause.png");
-							
-						$("#button_playpause").click(function()		{ tell_wymypy('pause') });
-						$("#button_playpause").mouseover(function()	{ changeIMG('button_playpause','pause_over.png') });
-						$("#button_playpause").mouseout(function()	{ changeIMG('button_playpause','pause.png') });
-						$("#button_playpause").mouseup(function()	{ changeIMG('button_playpause','pause.png') });
-						$("#button_playpause").mousedown(function() { changeIMG('button_playpause','pause_down.png') });
-					}
-				});
+				//System.Debug.outputString("in right network to update");
+				
+				$.ajax({
+					url: getWyMyPyStateURL(),
+					success: function(data) {
+						if(data.indexOf("pause") == -1) {
+							// currently paused or stopped
+							if($("#button_playpause").attr("src") == "imgs/pause.png")
+								$("#button_playpause").attr("src", "imgs/play.png");
+								
+							$("#button_playpause").click(function()		{ tell_wymypy('play') });
+							$("#button_playpause").mouseover(function()	{ changeIMG('button_playpause','play_over.png') });
+							$("#button_playpause").mouseout(function()	{ changeIMG('button_playpause','play.png') });
+							$("#button_playpause").mouseup(function()	{ changeIMG('button_playpause','play.png') });
+							$("#button_playpause").mousedown(function() { changeIMG('button_playpause','play_down.png') });
+						} else {
+							// currently playing
+							if($("#button_playpause").attr("src") == "imgs/play.png")
+								$("#button_playpause").attr("src", "imgs/pause.png");
+								
+							$("#button_playpause").click(function()		{ tell_wymypy('pause') });
+							$("#button_playpause").mouseover(function()	{ changeIMG('button_playpause','pause_over.png') });
+							$("#button_playpause").mouseout(function()	{ changeIMG('button_playpause','pause.png') });
+							$("#button_playpause").mouseup(function()	{ changeIMG('button_playpause','pause.png') });
+							$("#button_playpause").mousedown(function() { changeIMG('button_playpause','pause_down.png') });
+						}
+					},
+					error: function(err) { System.Debug.outputString(err); }});
 			} else {
-				System.Debug.outputString("not in right network to update");
+				//System.Debug.outputString("not in right network to update");
 			}
 		}
 		
@@ -126,7 +131,13 @@
 		// do real stuff
 		function tell_wymypy(exec) {
 			if(shouldDoStuff()) {
-				$.post(getWyMyPyActionURL(), {p0: exec}, function(data) { updatePage() });
+				$.ajax({
+					url: getWyMyPyActionURL(),
+					type: "POST",
+					data: {p0: exec},
+					success: function(data) { updatePage() },
+					error: function(err) { System.Debug.outputString(err) }
+				});
 			}
 		}
 	</script>
