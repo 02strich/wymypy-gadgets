@@ -30,6 +30,17 @@
 		var refreshInt	= 5;
 		var tickCount	= 0;
 		
+		// Initialize the gadget. called from the onload event of primary file
+		function init() {
+			System.Gadget.settingsUI = "settings.html";
+			System.Gadget.onSettingsClosed = settingsClosed;
+			$.ajaxSetup({ cache: false });
+			$.support.cors = true;
+			
+			updatePage();
+			setTimeout(function () { updateTick(); }, 1000);
+		}
+		
 		function updateTick() {
 			tickCount++;
 			if (tickCount >= refreshInt) {
@@ -40,14 +51,11 @@
 			setTimeout(function () { updateTick(); }, 1000);
 		}
 		
-		// Initialize the gadget. called from the onload event of primary file
-		function init() {
-			System.Gadget.settingsUI = "settings.html";
-			$.ajaxSetup({ cache: false });
-			$.support.cors = true;
-			
-			updatePage();
-			setTimeout(function () { updateTick(); }, 1000);
+		// react to closing of settings dialog
+		function settingsClosed(event) {
+			if (event.closeAction == event.Action.commit) {
+				refreshInt = parseInt(readSetting("settings_wymypy_update_intervall", "5"))
+			}
 		}
 		
 		function updatePage() {
