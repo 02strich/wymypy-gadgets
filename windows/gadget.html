@@ -95,19 +95,19 @@
 		
 		// URL to where to post actions
 		function getWyMyPyActionURL() {
-			return readSetting("settings_wymypy_url", "http://musik.pdm.02strich.de") + "/__ajax/Player/ope";
+			return readSetting("settings_wymypy_url", "http://musik.demo.local") + "/__ajax/Player/ope";
 		}
 		
 		// URL where to get the current "state"
 		function getWyMyPyStateURL() {
-			return readSetting("settings_wymypy_url", "http://musik.pdm.02strich.de") + "/__ajax/Player/player";
+			return readSetting("settings_wymypy_url", "http://musik.demo.local") + "/__ajax/Player/player";
 		}
 		
 		// returns whether the gadget should do anything, currently by looking
 		// if we are on the right network
 		function shouldDoStuff() {
 			try {
-				var configured_domain = readSetting("settings_wymypy_network", "pdm.02strich.de");
+				var configured_domain = readSetting("settings_wymypy_network", "demo.local");
 				
 				var objWMIService = GetObject("winmgmts:\\\\.\\root\\CIMV2");
 				var ipInterfaces = new Enumerator(objWMIService.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration Where IPenabled=True"));
