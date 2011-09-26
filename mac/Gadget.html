@@ -1,0 +1,148 @@
+<html>
+<head>
+    <title>WyMyPy Control</title>
+    <style>
+        body {
+		    margin: 0;
+		    width: 200px;
+            height: 27px;
+        }
+
+		#front {
+		    display:block;
+			
+			background-color: #000000;
+			border-radius: 5px;
+			
+			text-align:center;
+		}
+
+		#back {
+		    display:none;
+			
+			background-color: #000000;
+			border-radius: 5px;
+			
+			padding-left:2px;
+		
+			font-family: Tahoma;
+			font-size: 12pt;
+			color: #e4e4e4;
+		}
+		
+		button {
+			background:#666;
+			color:white;
+			cursor:pointer;
+			border:1px solid #666;
+		}
+
+		#infoButton {
+			position:absolute;
+		    bottom:20px;
+		    right:13px;
+		}
+		
+		#doneButton {
+		    position:absolute;
+		    top:0px;
+		    right:5px;
+		}
+    </style>
+	
+	<script type='text/javascript' src='/System/Library/WidgetResources/AppleClasses/AppleInfoButton.js' charset='utf-8'/>
+	<script type='text/javascript' src='/System/Library/WidgetResources/AppleClasses/AppleAnimator.js' charset='utf-8'/>
+	<script type='text/javascript' src='/System/Library/WidgetResources/AppleClasses/AppleButton.js' charset='utf-8'/>
+	<script type="text/javascript" src="jquery-1.6.4.js" />
+	<script type="text/javascript">
+		var gDoneButton;
+		var gInfoButton;
+		
+		// Initialize the gadget. called from the onload event of primary file
+		function init() {
+			$.ajaxSetup({ cache: false });
+			$.support.cors = true;
+			
+			// setup buttons
+			gInfoButton = new AppleInfoButton(document.getElementById("infoButton"), document.getElementById("front"), "white", "white", showPrefs);
+			gDoneButton = new AppleGlassButton(document.getElementById("doneButton"), "Done", hidePrefs);
+			
+			// load preferences
+			if (window.widget) {
+				var perf = widget.preferenceForKey("wymypy_url");
+				if (perf == undefined)
+					wymypy_url.value = "http://musik.demo.local";
+				else
+					wymypy_url.value = perf;
+			}
+		}
+		
+		function showPrefs() {
+			var front = document.getElementById("front");
+			var back = document.getElementById("back");
+			
+			if (window.widget)
+				widget.prepareForTransition("ToBack");
+			
+			back.style.display="block";
+			front.style.display="none";
+			
+			if (window.widget)
+				setTimeout ('widget.performTransition();', 0);
+		}
+		
+		function hidePrefs() {
+			var front = document.getElementById("front");
+			var back = document.getElementById("back");
+			
+			// store settings
+			if (window.widget)
+				widget.setPreferenceForKey(wymypy_url.value, "wymypy_url");
+			
+			if (window.widget)
+				widget.prepareForTransition("ToFront");
+			
+			back.style.display  = "none";
+			front.style.display = "block";
+			
+			if (window.widget)
+				setTimeout ('widget.performTransition();', 0);
+		}
+		
+		// URL to where to post actions
+		function getWyMyPyActionURL() {
+			return wymypy_url.value + "/__ajax/Player/ope";
+		}
+		
+		// do real stuff
+		function tell_wymypy(exec) {
+			alert(exec);
+			$.ajax({
+				url: getWyMyPyActionURL(),
+				type: "POST",
+				data: {p0: exec},
+			});
+		}
+	</script>
+</head>
+<body onload="init()">
+	<div id="front">
+		<button
+			onclick="tell_wymypy('prev');">&lt;&lt;</button><button
+			onclick="tell_wymypy('playpause');">&gt;/||</button><button
+			onclick="tell_wymypy('stop');">[]</button><button
+			onclick="tell_wymypy('next');">&gt;&gt;</button>
+		
+		<button
+			onclick="tell_wymypy('voldown');">-</button><button
+			onclick="tell_wymypy('volup');">+</button>
+
+		<div id='infoButton'></div>
+	</div>
+	<div id="back">
+		URL:<input type="text" id="wymypy_url" name="wymypy_url" size="16" />
+		<div id='doneButton'></div>
+	</div>
+</body>
+</html>
+
